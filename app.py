@@ -61,7 +61,7 @@ def create_thumbnail(image):
         return True
 
     except:
-        print traceback.format_exc()
+        print(traceback.format_exc())
         return False
 
 
@@ -86,19 +86,19 @@ def upload():
                 # create thumbnail after saving
                 if mime_type.startswith('image'):
                     create_thumbnail(filename)
-                
+
                 # get file size after saving
                 size = os.path.getsize(uploaded_file_path)
 
                 # return json for js call back
                 result = uploadfile(name=filename, type=mime_type, size=size)
-            
+
             return simplejson.dumps({"files": [result.get_file()]})
 
     if request.method == 'GET':
         # get all file in ./data directory
         files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'],f)) and f not in IGNORED_FILES ]
-        
+
         file_display = []
 
         for f in files:
@@ -122,7 +122,7 @@ def delete(filename):
 
             if os.path.exists(file_thumb_path):
                 os.remove(file_thumb_path)
-            
+
             return simplejson.dumps({filename: 'True'})
         except:
             return simplejson.dumps({filename: 'False'})
@@ -144,5 +144,5 @@ def index():
     return render_template('index.html')
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+app.run(debug=True)
