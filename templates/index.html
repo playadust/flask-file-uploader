@@ -83,6 +83,23 @@
         <!-- The table listing the files available for upload/download -->
         <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
     </form>
+
+
+
+    <form method="get" action="{{ url_for('proccess') }}">
+      <br>OK, I'm done uploading photos, now go ahead and<br>
+      <button type="submit" class="btn btn-primary">
+        <span style = "text-transform:uppercase">Proccess this library</span>
+      </button>
+    </form>
+
+
+
+
+
+
+
+
     <br>
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -113,6 +130,7 @@
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
+
     <tr class="template-upload fade">
         <td>
             <span class="preview"></span>
@@ -211,9 +229,9 @@
 <!-- The File Upload image preview & resize plugin -->
 <script src="static/js/jquery.fileupload-image.js"></script>
 <!-- The File Upload audio preview plugin -->
-<script src="static/js/jquery.fileupload-audio.js"></script>
+<!-- <script src="static/js/jquery.fileupload-audio.js"></script> -->
 <!-- The File Upload video preview plugin -->
-<script src="static/js/jquery.fileupload-video.js"></script>
+<!-- <script src="static/js/jquery.fileupload-video.js"></script> -->
 <!-- The File Upload validation plugin -->
 <script src="static/js/jquery.fileupload-validate.js"></script>
 <!-- The File Upload user interface plugin -->

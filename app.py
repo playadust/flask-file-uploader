@@ -17,17 +17,22 @@ from werkzeug import secure_filename
 
 from lib.upload_file import uploadfile
 
+### my stuff
+import glob
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['UPLOAD_FOLDER'] = 'data/'
-app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
+app.config['UPLOAD_FOLDER'] = 'data/uploads/'
+app.config['THUMBNAIL_FOLDER'] = 'data/uploads/thumbnail/'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = set(['txt', 'gif', 'png', 'jpg', 'jpeg', 'bmp', 'rar', 'zip', '7zip', 'doc', 'docx'])
 IGNORED_FILES = set(['.gitignore'])
 
 bootstrap = Bootstrap(app)
+
+user_id = 11
 
 
 def allowed_file(filename):
@@ -39,6 +44,10 @@ def gen_file_name(filename):
     """
     If file was exist already, rename it and return a new name
     """
+
+
+    name, extension = os.path.splitext(filename)
+    filename = '%s_%s%s' % (user_id, name, extension)
 
     i = 1
     while os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], filename)):
@@ -63,6 +72,35 @@ def create_thumbnail(image):
     except:
         print(traceback.format_exc())
         return False
+
+
+
+@app.route("/proccess", methods =['GET', 'POST'])
+def proccess():
+
+    # files = [user_file(f) for f in os.listdir(app.config['UPLOAD_FOLDER']) if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'],f)) and f not in IGNORED_FILES ]
+
+
+    # files = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) if and os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'],f)) and f not in IGNORED_FILES ]
+
+
+    path = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id)+"_*")
+    ress = glob.glob(path)
+
+    imgs = []
+
+    for img in ress:
+        imgs.append(img)
+
+    return(str(imgs))
+
+
+
+def user_file(filename):
+
+    return True
+    if int(filename.split('_')[0]) == user_id: return True
+    return False
 
 
 @app.route("/upload", methods=['GET', 'POST'])
@@ -104,7 +142,7 @@ def upload():
         for f in files:
             size = os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], f))
             file_saved = uploadfile(name=f, size=size)
-            file_display.append(file_saved.get_file())
+            if int(f.split('_')[0]) == user_id: file_display.append(file_saved.get_file())
 
         return simplejson.dumps({"files": file_display})
 
